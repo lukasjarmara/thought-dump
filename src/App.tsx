@@ -3,7 +3,7 @@ import * as React from "react";
 import Interface from "./Components/Interface/Interface.tsx";
 function App() {
   return (
-    <main>
+    <main className="overflow-clip">
       <Interface></Interface>
     </main>
   );

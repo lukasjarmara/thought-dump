@@ -9,28 +9,23 @@ const Card: React.FC<CardProps> = ({ content }) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  const randomColor = () => {
-    const r = randomValue(0, 255);
-    const g = randomValue(0, 255);
-    const b = randomValue(0, 255);
-    return `rgb(${r},${g},${b})`;
-  };
-
-  const randomTop = randomValue(100, window.innerHeight - 100);
-  const randomLeft = randomValue(100, window.innerWidth - 100);
+  const randomTop = randomValue(100, window.innerHeight - content.length * 10);
+  const randomLeft = randomValue(100, window.innerWidth - content.length * 10);
   const randomRotate = randomValue(-15, 15);
-  const color = randomColor();
 
   const style: React.CSSProperties = {
-    position: "absolute",
     top: `${randomTop}px`,
     left: `${randomLeft}px`,
     transform: `rotate(${randomRotate}deg)`,
-    color: color, // Add the random color to the style
   };
   return (
-    <div className="card" style={style}>
-      <span>{content}</span>
+    <div className="absolute" style={style}>
+      <span
+        className="absolute group transform transition-transform hover:scale-125 cursor-pointer whitespace-nowrap z-50 text-white"
+        onClick={(e) => ""}
+      >
+        {content}
+      </span>
     </div>
   );
 };

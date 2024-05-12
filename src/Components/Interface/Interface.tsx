@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import Card from "../Card/Card.tsx";
-import "./Interface.css";
 
 const Interface: React.FC = () => {
   const [newContent, setNewContent] = useState<string>("");
@@ -18,18 +17,37 @@ const Interface: React.FC = () => {
   }, [showInput]);
 
   const handleClick = (e: React.MouseEvent) => {
+    const inputWidth = inputRef.current?.offsetWidth || 0;
+    const inputHeight = inputRef.current?.offsetHeight || 0;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
     if (showInput === false) {
       setInputPosition({ x: e.pageX, y: e.pageY });
       setShowInput(true);
     } else {
-      const distance = Math.sqrt(
-        Math.pow(e.pageX - inputPosition.x, 2) +
-          Math.pow(e.pageY - inputPosition.y, 2)
-      );
-      if (distance > 50) {
-        setInputPosition({ x: e.pageX, y: e.pageY });
+      let newX = e.pageX;
+      let newY = e.pageY;
+
+      if (newX + inputWidth > screenWidth) {
+        newX = screenWidth - inputWidth;
       }
+
+      if (newY + inputHeight > screenHeight) {
+        newY = screenHeight - inputHeight;
+      }
+
+      if (newX < 0) {
+        newX = 0;
+      }
+
+      if (newY < 0) {
+        newY = 0;
+      }
+
+      setInputPosition({ x: newX, y: newY });
     }
+
     setTimeout(() => inputRef.current?.focus(), 0);
   };
 
@@ -46,18 +64,19 @@ const Interface: React.FC = () => {
   };
 
   return (
-    <div className="container" onClick={handleClick}>
+    <div className="h-screen w-screen bg-zinc-800" onClick={handleClick}>
       {cards}
       {showInput && (
         <form
+          className="absolute"
           style={{
-            position: "absolute",
             left: `${inputPosition.x}px`,
             top: `${inputPosition.y}px`,
           }}
           onSubmit={handleAdd}
         >
           <input
+            className="border-0 bg-transparent text-white outline-none"
             ref={inputRef}
             type="text"
             value={newContent}
