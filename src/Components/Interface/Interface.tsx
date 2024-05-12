@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Card from "../Card/Card.tsx";
+import { ref, set, onValue } from "firebase/database";
+import { db } from "../../firebase.js";
 
 const Interface: React.FC = () => {
   const [newContent, setNewContent] = useState<string>("");
@@ -56,13 +58,38 @@ const Interface: React.FC = () => {
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     if (newContent.trim() !== "") {
-      const newCard = <Card key={cards.length} content={newContent} />;
+      const newCard = (
+        <Card key={cards.length} index={cards.length} content={newContent} />
+      );
       setCards((prevCards) => [...prevCards, newCard]);
+
+      const contentRef = ref(db, "content/");
+
+      set(contentRef, {
+        content: newContent,
+      });
+
       setNewContent("");
       setShowInput(false);
     }
   };
+  useEffect(() => {
+    const contentRef = ref(db, "content/");
 
+    onValue(contentRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const newCard = (
+          <Card
+            key={cards.length}
+            index={cards.length}
+            content={data.content}
+          />
+        );
+        setCards((prevCards) => [...prevCards, newCard]);
+      }
+    });
+  }, []);
   return (
     <div className="h-screen w-screen bg-zinc-800" onClick={handleClick}>
       {cards}
