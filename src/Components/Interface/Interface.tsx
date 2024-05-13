@@ -58,12 +58,7 @@ const Interface: React.FC = () => {
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     if (newContent.trim() !== "") {
-      const newCard = (
-        <Card key={cards.length} index={cards.length} content={newContent} />
-      );
-      setCards((prevCards) => [...prevCards, newCard]);
-
-      const contentRef = ref(db, "content/");
+      const contentRef = ref(db, "content/" + newContent);
 
       set(contentRef, {
         content: newContent,
@@ -78,16 +73,16 @@ const Interface: React.FC = () => {
 
     onValue(contentRef, (snapshot) => {
       const data = snapshot.val();
-      if (data) {
-        const newCard = (
-          <Card
-            key={cards.length}
-            index={cards.length}
-            content={data.content}
-          />
-        );
-        setCards((prevCards) => [...prevCards, newCard]);
-      }
+      console.log(data);
+      setCards((prevCards) => {
+        const existingKeys = prevCards.map((card) => card.key);
+        const newCards = Object.keys(data)
+          .filter((key) => !existingKeys.includes(key))
+          .map((key) => (
+            <Card key={key} index={parseInt(key)} content={data[key].content} />
+          ));
+        return [...prevCards, ...newCards];
+      });
     });
   }, []);
   return (

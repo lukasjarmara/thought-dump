@@ -25,7 +25,7 @@ const Card: React.FC<CardProps> = ({ content, index }) => {
   return (
     <div className={`absolute z-${index}`} style={style}>
       <span
-        className={`absolute group transform transition-transform hover:scale-125 cursor-default whitespace-nowrap text-${randomColor}-${randomShade} `}
+        className={`absolute group transform transition-transform hover: z-100 hover:scale-125 cursor-default whitespace-nowrap text-${randomColor}-${randomShade} `}
         onClick={(e) => ""}
       >
         {content}
